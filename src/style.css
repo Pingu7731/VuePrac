@@ -99,7 +99,7 @@ form input[type="submit"]:hover{
 
 .canvas-box{
     width: 100%;
-    max-width: 720px;
+    max-width: 100%;
     background-color: white;
     padding: 1rem;
     border-radius: 0.7rem;
