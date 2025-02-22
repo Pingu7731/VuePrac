@@ -17,17 +17,28 @@ const addWeight = () => {
 }
 watch(weights, newWeights => {
   const ws = [...newWeights];
+  if (weightChart.value) {
+    weightChart.value.data.labels = ws.sort((a, b) => a.date - b.date)
+          .map(w => new Date(w.date).toLocaleDateString()).slice(-7)
+  
+    weightChart.value.data.datasets[0].data = ws.sort((a, b) => a.date - b.date)
+      .map(w => w.weight).slice(-7)
 
+    weightChart.value.update()
+    return
+  }
   nextTick(() => {
-    weight.chart.value = new Chart(weightChartEl.value.getcContext('2d'), {
+    weightChart.value = new Chart(weightChartEl.value.getContext('2d'), {
       type: 'line',
       data: {
-        label: ws.sort((a, b) => a.date - b.date).map(w => new Date(w.date).toLocaleDateString),
+        label: ws.sort((a, b) => a.date - b.date)
+          .map(w => new Date(w.date).toLocaleDateString()),
         datasets: [
           {
             label: 'Weight',
             data: ws.sort((a, b) => a.date - b.date).map(w => w.weight),
             backgroundColor: 'rgba(255,105,180,0.2)',
+            borderColor:'rgb(255,105,180)',
             borderWidth: 1,
             fill: true,
           }
@@ -35,7 +46,7 @@ watch(weights, newWeights => {
       },
       options: {
         responsive: true,
-        maintainAspectRation: false
+        maintainAspectRatio: false
       }
     })
   })
@@ -56,7 +67,7 @@ watch(weights, newWeights => {
       <input type="submit" value="Add">
     </form>
 
-    <div v-if="weights && weights.length > 2">
+    <div v-if="weights && weights.length > 0">
       <h2>Last 7 days</h2>
       <div class="canvas-box">
         <canvas ref="weightChartEl"></canvas>
